@@ -1839,105 +1839,104 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _env_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../env.js */ "./resources/js/env.js");
-var _data$mounted$methods;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = (_data$mounted$methods = {
+/* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       book: {},
       loading: false,
       viewallLoading: true,
-      books: []
+      books: [],
+      user: {}
     };
   },
-  mounted: function mounted() {},
   methods: {
     saveBook: function saveBook() {
       var _this = this;
@@ -1952,6 +1951,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             type: 'success',
             text: 'Book has been added successfully'
           });
+
+          _this.fetchAllBooks();
         } else {
           _this.$notify({
             type: 'error',
@@ -1996,41 +1997,62 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
-    deleteBook: function deleteBook(book) {
+    getAuthUser: function getAuthUser() {
       var _this3 = this;
+
+      axios.get(_env_js__WEBPACK_IMPORTED_MODULE_0__["apiDomain"] + '/auth-user').then(function (response) {
+        var $_response = response.data;
+
+        if ($_response) {
+          _this3.user = JSON.parse($_response.data);
+          console.log(_this3.user);
+        }
+      })["catch"](function (error) {
+        _this3.$notify({
+          type: 'error',
+          text: 'No authenticated user found.'
+        });
+      });
+    },
+    deleteBook: function deleteBook(book) {
+      var _this4 = this;
 
       axios["delete"](_env_js__WEBPACK_IMPORTED_MODULE_0__["apiDomain"] + '/books/' + book.id).then(function (response) {
         var $_response = response.data;
         console.log($_response);
 
         if ($_response.status === 0) {
-          _this3.$notify({
+          _this4.$notify({
             type: 'success',
             text: 'Book has been deleted successfully'
           });
 
-          _this3.fetchAllBooks();
+          _this4.fetchAllBooks();
         } else {
-          _this3.$notify({
+          _this4.$notify({
             type: 'error',
             text: 'Could not delete books. Try reloading this page'
           });
         }
 
-        _this3.viewallLoading = false;
+        _this4.viewallLoading = false;
       })["catch"](function (error) {
-        _this3.viewallLoading = false;
+        _this4.viewallLoading = false;
 
-        _this3.$notify({
+        _this4.$notify({
           type: 'error',
           text: 'Could not delete books. Please try again'
         });
       });
     }
-  }
-}, _defineProperty(_data$mounted$methods, "mounted", function mounted() {
-  this.fetchAllBooks();
-}), _defineProperty(_data$mounted$methods, "components", {}), _defineProperty(_data$mounted$methods, "props", []), _data$mounted$methods);
+  },
+  mounted: function mounted() {
+    this.fetchAllBooks();
+    this.getAuthUser();
+  },
+  components: {},
+  props: []
+});
 
 /***/ }),
 
@@ -37571,25 +37593,47 @@ var render = function() {
                             _vm._v(" "),
                             _c("td", [_vm._v(_vm._s(book.volume))]),
                             _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(book.author.name))]),
+                            _vm._v(" "),
                             _c("td", [_vm._v(_vm._s(book.genre))]),
                             _vm._v(" "),
                             _c("td", [_vm._v(_vm._s(book.year))]),
                             _vm._v(" "),
                             _c("td", [
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "icon text-danger",
-                                  attrs: { href: "" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.deleteBook(book)
-                                    }
-                                  }
-                                },
-                                [_vm._v("delete")]
-                              )
+                              book.author.id == _vm.user.id
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "icon text-danger btn btn-small",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.deleteBook(book)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("delete")]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              book.author.id != _vm.user.id
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass:
+                                        "icon text-danger btn btn-small",
+                                      attrs: { disabled: "" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.deleteBook(book)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("delete")]
+                                  )
+                                : _vm._e()
                             ])
                           ])
                         }),
@@ -37620,6 +37664,8 @@ var staticRenderFns = [
         _c("th", { staticStyle: { width: "40%" } }, [_vm._v("Title")]),
         _vm._v(" "),
         _c("th", [_vm._v("Volume")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Author")]),
         _vm._v(" "),
         _c("th", { staticClass: "number" }, [_vm._v("Genre")]),
         _vm._v(" "),

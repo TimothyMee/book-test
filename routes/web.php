@@ -21,3 +21,4 @@ Route::get('/create-books', 'BookController@index')->name('create-book');
 Route::post('/books/create', 'BookController@create');
 Route::get('/books', 'BookController@getAll');
 Route::delete('/books/{i}', 'BookController@delete');
+Route::get('/auth-user', 'HomeController@getauthuser');

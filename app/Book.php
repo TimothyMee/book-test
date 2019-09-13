@@ -30,12 +30,12 @@ class Book extends Model
     }
     public function getBook($author)
     {
-        return $this->where("author", $author)->get();
+        return $this->where([["author", $author], ["deleted_at", null]])->with('author')->get();
     }
 
     public function getBookWithGenre($genre)
     {
-       return  $this->where("genre", $genre)->get();
+       return  $this->where([["genre", $genre], ["deleted_at", null]])->with('author')->get();
     }
 
     public function deleteBook($id)

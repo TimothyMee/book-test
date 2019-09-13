@@ -55,6 +55,7 @@
                             <th>#</th>
                             <th style="width:40%;">Title</th>
                             <th>Volume</th>
+                            <th>Author</th>
                             <th class="number">Genre</th>
                             <th class="number">Year</th>
                             <th class="actions">Actions</th>
@@ -65,10 +66,12 @@
                             <td>{{ ++index }}</td>
                             <td>{{book.title}}</td>
                             <td>{{book.volume}}</td>
+                            <td>{{book.author.name}}</td>
                             <td>{{book.genre}}</td>
                             <td>{{book.year}}</td>
                             <td>
-                                <a href="" class="icon text-danger" @click.prevent="deleteBook(book)">delete</a>
+                                <button v-if="book.author.id == user.id" class="icon text-danger btn btn-small" @click.prevent="deleteBook(book)">delete</button>
+                                <button v-if="book.author.id != user.id" class="icon text-danger btn btn-small" disabled @click.prevent="deleteBook(book)">delete</button>
                             </td>
                         </tr>
                         </tbody>
@@ -90,11 +93,9 @@
                 book: {},
                 loading: false,
                 viewallLoading: true,
-                books:[]
+                books:[],
+                user:{}
             }
-        },
-        mounted(){
-
         },
         methods:{
             saveBook () {
@@ -104,6 +105,7 @@
                     console.log("here", response);
                     if ($_response.status === 0) {
                         this.$notify({type: 'success', text: 'Book has been added successfully'});
+                        this.fetchAllBooks();
                     } else {
                         this.$notify({type: 'error', text: 'Could not create add book. Please try again'});
                     }
@@ -131,6 +133,18 @@
                 })
             },
 
+            getAuthUser(){
+                axios.get(apiDomain + '/auth-user').then(response => {
+                let $_response = response.data;
+                    if ($_response) {
+                        this.user = JSON.parse($_response.data);
+                        console.log(this.user);
+                    }
+                }).catch(error => {
+                    this.$notify({type: 'error', text: 'No authenticated user found.'});
+                })
+            },
+
             deleteBook(book){
                 axios.delete(apiDomain + '/books/' + book.id).then(response => {
                     let $_response = response.data;
@@ -150,6 +164,7 @@
         },
          mounted(){
             this.fetchAllBooks();
+            this.getAuthUser();
         },
         components:{},
         props:[]
